@@ -1,0 +1,28 @@
+---
+- name: Jenkins container with reverse proxy
+  docker_compose:
+    project_name: jenkins
+    definition:
+      version: '2'
+      services:
+        # proxy
+        rev-proxy:
+          image: jwilder/nginx-proxy:alpine
+          container_name: reverse-proxy
+          ports:
+            - 80:80
+          volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+          restart: always
+        # jenkins
+        jenkins:
+          build:
+            context: /var/cache/containers/jenkins
+          container_name: jenkins
+          environment:
+            VIRTUAL_PORT: 8080
+            VIRTUAL_HOST: jenkins.wtf
+          ports:
+            - 50000:50000
+          hostname: jenkins
+          restart: always

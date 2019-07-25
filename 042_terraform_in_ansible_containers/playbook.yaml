@@ -1,0 +1,15 @@
+---
+- name: Run Terraform project
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - cloud_provisioning
+
+- name: Setup Docker host
+  hosts: docker_hosts
+  gather_facts: true
+  connection: ssh
+  roles:
+    - docker_host
+    - containers

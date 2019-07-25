@@ -1,0 +1,41 @@
+---
+- name: Docker CE GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Docker CE repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+    filename: docker-ce
+    state: present
+
+- name: Install docker and dependecies
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - docker-ce
+      - gnupg2
+      - python3-pip
+      - rsync
+    update_cache: true
+    state: latest
+
+- name: Install runtime (pip) dependencies
+  pip:
+    name:
+      - docker
+      - docker-compose
+
+- name: Install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    checksum: "sha256:cfb3439956216b1248308141f7193776fcf4b9c9b49cbbe2fb07885678e2bb8a"
+    mode: 0755
+
+- name: Sync build directory with GIT tree image
+  synchronize:
+    src: "{{ playbook_dir }}/containers/"
+    dest: "/var/cache/containers"

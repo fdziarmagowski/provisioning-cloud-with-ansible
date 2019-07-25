@@ -1,0 +1,7 @@
+---
+- name: Run Terraform project
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - cloud_provisioning

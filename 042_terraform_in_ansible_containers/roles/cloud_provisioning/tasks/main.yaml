@@ -1,0 +1,15 @@
+---
+- name: Run Terraform
+  terraform:
+    project_path: ./terraform_project
+    force_init: true
+    state: present
+    variables:
+      hcloud_token: "{{ hcloud_token }}"
+  register: tf_output
+
+- name: Create new host and group in inventory
+  add_host:
+    name: "{{ tf_output.outputs.ipv4_address.value }}"
+    groups: "{{ tf_output.outputs.group.value.group }}"
+    hostname: "{{ tf_output.outputs.hostname.value }}"
