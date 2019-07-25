@@ -4,8 +4,6 @@
     project_path: ./terraform_project
     force_init: true
     state: present
-    variables:
-      hcloud_token: "{{ hcloud_token }}"
   register: tf_output
 
 - name: Create new host and group in inventory
